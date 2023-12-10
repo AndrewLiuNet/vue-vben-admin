@@ -56,7 +56,7 @@ async function getAsyncMenus() {
   //递归过滤所有隐藏的菜单
   const menuFilter = (items) => {
     return items.filter((item) => {
-      const show = !item.meta?.hideMenu && !item.hideMenu;
+      const show = !item.meta?.isHide && !item.isHide;
       if (show && item.children) {
         item.children = menuFilter(item.children);
       }

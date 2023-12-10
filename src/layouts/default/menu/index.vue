@@ -111,6 +111,7 @@
        */
 
       function handleMenuClick(path: string) {
+        if (path.replace('/', '') == 'null') return;
         go(path);
       }
 

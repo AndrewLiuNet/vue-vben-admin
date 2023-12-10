@@ -24,6 +24,12 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
+    <FormItem name="code" class="enter-x">
+      <Input size="large" v-model:value="formData.code" placeholder="请输入验证码">
+        <template #addonAfter>
+          <img class="w-[80px] h-[38px] rounded-r-[8px]" :src="captcha.imgUrl" /> </template
+      ></Input>
+    </FormItem>
 
     <ARow class="enter-x">
       <ACol :span="12">
@@ -82,7 +88,7 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed } from 'vue';
+  import { reactive, ref, unref, computed, onMounted } from 'vue';
 
   import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
   import {
@@ -100,6 +106,8 @@
   import { useUserStore } from '@/store/modules/user';
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '@/hooks/web/useDesign';
+
+  import { getCaptcha } from '@/api/sysAuth/login.js';
   //import { onKeyStroke } from '@vueuse/core';
 
   const ACol = Col;
@@ -118,9 +126,15 @@
   const loading = ref(false);
   const rememberMe = ref(false);
 
+  const captcha = ref({
+    id: '',
+    imgUrl: '',
+  });
+
   const formData = reactive({
-    account: 'vben',
+    account: 'superadmin',
     password: '123456',
+    code: '',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -129,20 +143,32 @@
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
 
+  const loadCaptcha = async () => {
+    const { id, img } = await getCaptcha();
+    captcha.value.id = id;
+    captcha.value.imgUrl = `data:image;base64,${img}`;
+  };
+
+  onMounted(() => {
+    loadCaptcha();
+  });
+
   async function handleLogin() {
     const data = await validForm();
     if (!data) return;
     try {
       loading.value = true;
-      const userInfo = await userStore.login({
+      const result = await userStore.login({
         password: data.password,
-        username: data.account,
+        account: data.account,
+        code: data.code,
+        codeId: captcha.value.id,
         mode: 'none', //不要默认的错误提示
       });
-      if (userInfo) {
+      if (result) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
-          description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realName}`,
+          description: `${t('sys.login.loginSuccessDesc')}: ${userStore?.userInfo?.realName}`,
           duration: 3,
         });
       }
@@ -157,3 +183,8 @@
     }
   }
 </script>
+<style scoped>
+  :deep(.ant-input-group-addon) {
+    padding: 0 !important;
+  }
+</style>

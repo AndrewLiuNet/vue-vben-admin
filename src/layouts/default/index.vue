@@ -29,7 +29,6 @@
   import { useLockPage } from '@/hooks/web/useLockPage';
 
   import { useAppInject } from '@/hooks/web/useAppInject';
-
   import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting';
 
   const LayoutFeatures = createAsyncComponent(() => import('@/layouts/default/feature/index.vue'));

@@ -1,6 +1,5 @@
-import { resultSuccess, resultError, getRequestToken, requestParams } from '../_util';
+import { resultSuccess } from '../_util';
 import { MockMethod } from 'vite-plugin-mock';
-import { createFakeUserList } from './user';
 
 // single
 const dashboardRoute = {
@@ -9,8 +8,7 @@ const dashboardRoute = {
   component: 'LAYOUT',
   redirect: '/dashboard/analysis',
   meta: {
-    title: 'routes.dashboard.dashboard',
-    hideChildrenInMenu: true,
+    title: 'hello',
     icon: 'bx:bx-home',
   },
   children: [
@@ -19,10 +17,10 @@ const dashboardRoute = {
       name: 'Analysis',
       component: '/dashboard/analysis/index',
       meta: {
-        hideMenu: true,
+        // hideMenu: true,
         hideBreadcrumb: true,
         title: 'routes.dashboard.analysis',
-        currentActiveMenu: '/dashboard',
+        // currentActiveMenu: '/dashboard',
         icon: 'bx:bx-home',
       },
     },
@@ -31,10 +29,10 @@ const dashboardRoute = {
       name: 'Workbench',
       component: '/dashboard/workbench/index',
       meta: {
-        hideMenu: true,
+        // hideMenu: true,
         hideBreadcrumb: true,
         title: 'routes.dashboard.workbench',
-        currentActiveMenu: '/dashboard',
+        // currentActiveMenu: '/dashboard',
         icon: 'bx:bx-home',
       },
     },
@@ -80,61 +78,61 @@ const authRoute = {
   children: [backRoute],
 };
 
-const levelRoute = {
-  path: '/level',
-  name: 'Level',
-  component: 'LAYOUT',
-  redirect: '/level/menu1/menu1-1',
-  meta: {
-    icon: 'carbon:user-role',
-    title: 'routes.demo.level.level',
-  },
+// const levelRoute = {
+//   path: '/level',
+//   name: 'Level',
+//   component: 'LAYOUT',
+//   redirect: '/level/menu1/menu1-1',
+//   meta: {
+//     icon: 'carbon:user-role',
+//     title: 'routes.demo.level.level',
+//   },
 
-  children: [
-    {
-      path: 'menu1',
-      name: 'Menu1Demo',
-      meta: {
-        title: 'Menu1',
-      },
-      children: [
-        {
-          path: 'menu1-1',
-          name: 'Menu11Demo',
-          meta: {
-            title: 'Menu1-1',
-          },
-          children: [
-            {
-              path: 'menu1-1-1',
-              name: 'Menu111Demo',
-              component: '/demo/level/Menu111',
-              meta: {
-                title: 'Menu111',
-              },
-            },
-          ],
-        },
-        {
-          path: 'menu1-2',
-          name: 'Menu12Demo',
-          component: '/demo/level/Menu12',
-          meta: {
-            title: 'Menu1-2',
-          },
-        },
-      ],
-    },
-    {
-      path: 'menu2',
-      name: 'Menu2Demo',
-      component: '/demo/level/Menu2',
-      meta: {
-        title: 'Menu2',
-      },
-    },
-  ],
-};
+//   children: [
+//     {
+//       path: 'menu1',
+//       name: 'Menu1Demo',
+//       meta: {
+//         title: 'Menu1',
+//       },
+//       children: [
+//         {
+//           path: 'menu1-1',
+//           name: 'Menu11Demo',
+//           meta: {
+//             title: 'Menu1-1',
+//           },
+//           children: [
+//             {
+//               path: 'menu1-1-1',
+//               name: 'Menu111Demo',
+//               component: '/demo/level/Menu111',
+//               meta: {
+//                 title: 'Menu111',
+//               },
+//             },
+//           ],
+//         },
+//         {
+//           path: 'menu1-2',
+//           name: 'Menu12Demo',
+//           component: '/demo/level/Menu12',
+//           meta: {
+//             title: 'Menu1-2',
+//           },
+//         },
+//       ],
+//     },
+//     {
+//       path: 'menu2',
+//       name: 'Menu2Demo',
+//       component: '/demo/level/Menu2',
+//       meta: {
+//         title: 'Menu2',
+//       },
+//     },
+//   ],
+// };
 
 const sysRoute = {
   path: '/system',
@@ -207,62 +205,60 @@ const sysRoute = {
   ],
 };
 
-const linkRoute = {
-  path: '/link',
-  name: 'Link',
-  component: 'LAYOUT',
-  meta: {
-    icon: 'ion:tv-outline',
-    title: 'routes.demo.iframe.frame',
-  },
-  children: [
-    {
-      path: 'doc',
-      name: 'Doc',
-      meta: {
-        title: 'routes.demo.iframe.doc',
-        frameSrc: 'https://doc.vvbin.cn/',
-      },
-    },
-    {
-      path: 'https://doc.vvbin.cn/',
-      name: 'DocExternal',
-      component: 'LAYOUT',
-      meta: {
-        title: 'routes.demo.iframe.docExternal',
-      },
-    },
-  ],
-};
+// const linkRoute = {
+//   path: '/link',
+//   name: 'Link',
+//   component: 'LAYOUT',
+//   meta: {
+//     icon: 'ion:tv-outline',
+//     title: 'routes.demo.iframe.frame',
+//   },
+//   children: [
+//     {
+//       path: 'doc',
+//       name: 'Doc',
+//       meta: {
+//         title: 'routes.demo.iframe.doc',
+//         frameSrc: 'https://doc.vvbin.cn/',
+//       },
+//     },
+//     {
+//       path: 'https://doc.vvbin.cn/',
+//       name: 'DocExternal',
+//       component: 'LAYOUT',
+//       meta: {
+//         title: 'routes.demo.iframe.docExternal',
+//       },
+//     },
+//   ],
+// };
 
 export default [
   {
     url: '/basic-api/getMenuList',
     timeout: 1000,
     method: 'get',
-    response: (request: requestParams) => {
-      const token = getRequestToken(request);
-      if (!token) {
-        return resultError('Invalid token!');
-      }
-      const checkUser = createFakeUserList().find((item) => item.token === token);
-      if (!checkUser) {
-        return resultError('Invalid user token!');
-      }
-      const id = checkUser.userId;
-      let menu: Object[];
-      switch (id) {
-        case '1':
-          dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[0].path;
-          menu = [dashboardRoute, authRoute, levelRoute, sysRoute, linkRoute];
-          break;
-        case '2':
-          dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[1].path;
-          menu = [dashboardRoute, authRoute, levelRoute, linkRoute];
-          break;
-        default:
-          menu = [];
-      }
+    response: () => {
+      // const token = getRequestToken(request);
+      // if (!token) {
+      //   return resultError('Invalid token!');
+      // }
+      // const checkUser = createFakeUserList().find((item) => item.token === token);
+      // if (!checkUser) {
+      //   return resultError('Invalid user token!');
+      // }
+      // const id = checkUser.userId;
+      // const id = '1';
+      const menu: Object[] = [dashboardRoute, authRoute, sysRoute];
+      // switch (id) {
+      //   case '1':
+      //     dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[0].path;
+      //     break;
+      //   case '2':
+      //     dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[1].path;
+      //   default:
+      //     menu = [];
+      // }
 
       return resultSuccess(menu);
     },

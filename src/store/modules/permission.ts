@@ -18,7 +18,8 @@ import { ERROR_LOG_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router/routes/basic';
 
 import { filter } from '@/utils/helper/treeHelper';
 
-import { getMenuList } from '@/api/sys/menu';
+// import { getMenuList } from '@/api/sys/menu';
+import { getMenu } from '@/api/sysAuth/menu.js';
 import { getPermCode } from '@/api/sys/user';
 
 import { useMessage } from '@/hooks/web/useMessage';
@@ -221,10 +222,10 @@ export const usePermissionStore = defineStore({
           // 这个功能可能只需要执行一次，实际项目可以自己放在合适的时间
           let routeList: AppRouteRecordRaw[] = [];
           try {
-            await this.changePermissionCode();
-            routeList = (await getMenuList()) as AppRouteRecordRaw[];
+            // await this.changePermissionCode();
+            routeList = (await getMenu()) as AppRouteRecordRaw[];
           } catch (error) {
-            console.error(error);
+            console.error('error', error);
           }
 
           // Dynamically introduce components
@@ -234,6 +235,7 @@ export const usePermissionStore = defineStore({
           //  Background routing to menu structure
           //  后台路由到菜单结构
           const backMenuList = transformRouteToMenu(routeList);
+          console.log('backMenuList', backMenuList);
           this.setBackMenuList(backMenuList);
 
           // remove meta.ignoreRoute item
